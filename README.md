@@ -1,39 +1,25 @@
-# GitHub create release step
+# GitHub merge step
 
-A wercker step for creating a GitHub release. It has a few parameters, but only two are required: `token` and `tag`. See [Creating a GitHub token](#creating-a-github-token).
+A wercker step for merging Github branches. It has a few parameters, but only two are required: `token` and `base`. See [Creating a GitHub token](#creating-a-github-token).
 
-This step will export the id of the release in an environment variable (default: `$WERCKER_GITHUB_CREATE_RELEASE_ID`). This allows other steps to use this release, like the github-upload-asset step.
+This step will export the id of the merge in an environment variable (default: `$WERCKER_GITHUB_MERGE_ID`). This allows other steps to use this merge, like the github-upload-asset step.
 
 Currently this step does not do any json escaping. So be careful when using quotes or newlines in parameters.
 
-More information about GitHub releases:
+More information about GitHub merging:
 
-- https://github.com/blog/1547-release-your-software
-- https://developer.github.com/v3/repos/releases/
+- https://developer.github.com/v3/repos/merging/
 
 # Example
 
-A minimal example, this will get the token from a environment variable and use the hardcoded `v1.0.0` tag:
+A minimal example, this will get the token from a environment variable and use the hardcoded develop branch:
 
 ``` yaml
 deploy:
     steps:
-        - github-create-release:
+        - github-merge:
             token: $GITHUB_TOKEN
-            tag: v1.0.0
-```
-
-It is also possible to use a environment variable as a token parameter (or any parameter actually). A fictional example which gets the version of the application from `rake version`, stores it in a environment variable en finally passes it along to `github-create-release` (**for this to work, a `version` task needs to be created**):
-
-``` yaml
-deploy:
-    steps:
-        - script:
-            name: get version from rake
-            code: export APP_VERSION=$(rake version)
-        - github-create-release:
-            token: $GITHUB_TOKEN
-            tag: $APP_VERSION
+            base: develop
 ```
 
 # Common problems
@@ -48,7 +34,11 @@ The `token` is not valid. If using a protected environment variable, check if th
 
 ## curl: (22) The requested URL returned error: 422
 
-GitHub rejected the API call. Check if the tag you are using isn't in use already.
+GitHub rejected the API call.
+
+## curl: (22) The requested URL returned error: 409
+
+Merge conflict.
 
 # Creating a GitHub token
 
@@ -61,22 +51,18 @@ To be able to use this step, you will first need to create a GitHub token with a
 # Options
 
 - `token` The token used to make the requests to GitHub. See [Creating a GitHub token](#creating-a-github-token).
-- `tag` The tag name of the release. This needs to be unique for this repository. Semver versioning is recommended, but not required. (make sure this is json encoded, see [TODO](#todo))
+- `base` The name of the base branch that the head will be merged into.
+- `head` (optional) The head to merge. This can be a branch name or a commit SHA1. Defaults to the current branch.
 - `owner` (optional) The GitHub owner of the repository. Defaults to `$WERCKER_GIT_OWNER`, which is the GitHub owner of the original build.
 - `repo` (optional) The name of the GitHub repository. Defaults to `$WERCKER_GIT_REPOSITORY`, which is the repository of the original build.
-- `target-commitish` (optional) Specifies the commitish value that determines where the Git tag is created from. Can be any branch or commit SHA. Defaults to `$WERCKER_GIT_COMMIT`, which is the commit of the original build.
-- `title` (optional) The title of the release. (make sure this is json encoded, see [TODO](#todo))
-- `body` (optional) Text describing the contents of the tag. (make sure this is json encoded, see [TODO](#todo))
-- `draft` (optional) Create a unpublished release if this is `true`, or create a published release if this is `false`. Defaults to empty, which means the default of GitHub will be used (currently this is `false`).
-- `prerelease` (optional) Create a pre-release release if this is `true`, or create a normal release if this is `false`. Defaults to empty, which means the default of GitHub will be used (currently this is `false`).
+- `commit_message` (optional) Commit message to use for the merge commit. If omitted, a default message will be used. (make sure this is json encoded, see [TODO](#todo))
 - `export-id` (optional) After the release is created, a release id will be made available in the environment variable identifier in this environment variable. Defaults to `WERCKER_GITHUB_CREATE_RELEASE_ID`.
 
 # TODO
 
-- Create better error handling for invalid token en existing tag.
+- Create better error handling for invalid token and merge conflict.
 - Escape user input to be valid json.
 - Make sure `export_id` contains a valid environment variable identifier.
-- Add check to see if the tag is not used for a release already.
 
 # License
 

@@ -1,6 +1,6 @@
-name: github-create-release
+name: github-merge
 version: 1.0.1
-description: wercker step for creating a GitHub release
+description: wercker step for merging Github branches
 keywords:
   - GitHub
-  - release
+  - merge
