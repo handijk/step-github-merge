@@ -89,8 +89,8 @@ main() {
     "$token" \
     "$owner" \
     "$repo" \
-    "$head" \
     "$base" \
+    "$head" \
     "$commit_message");
 
   info "finished merging $head with $base to GitHub repo $owner/$repo";
