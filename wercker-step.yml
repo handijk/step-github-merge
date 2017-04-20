@@ -1,5 +1,5 @@
 name: github-merge
-version: 1.0.1
+version: 1.0.2
 description: wercker step for merging Github branches
 keywords:
   - GitHub
