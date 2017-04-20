@@ -44,13 +44,13 @@ main() {
   set -e;
 
   # Assign global variables to local variables
-  local token="$WERCKER_GITHUB_CREATE_RELEASE_TOKEN";
-  local owner="$WERCKER_GITHUB_CREATE_RELEASE_OWNER";
-  local repo="$WERCKER_GITHUB_CREATE_RELEASE_REPO";
+  local token="$WERCKER_GITHUB_MERGE_TOKEN";
+  local owner="$WERCKER_GITHUB_MERGE_OWNER";
+  local repo="$WERCKER_GITHUB_MERE_REPO";
   local head="$WERCKER_GITHUB_MERGE_HEAD";
   local base="$WERCKER_GITHUB_MERGE_BASE";
-  local commit_message="$WERCKER_GITHUB_COMMIT_MESSAGE";
-  local export_id="$WERCKER_GITHUB_CREATE_RELEASE_EXPORT_ID";
+  local commit_message="$WERCKER_MERGE_COMMIT_MESSAGE";
+  local export_id="$WERCKER_GITHUB_MERGE_EXPORT_ID";
 
   # Validate variables
   if [ -z "$token" ]; then
